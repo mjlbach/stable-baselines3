@@ -132,6 +132,7 @@ class HER(BaseAlgorithm):
         # storage for transitions of current episode for offline sampling
         # for online sampling, it replaces the "classic" replay buffer completely
         her_buffer_size = self.buffer_size if online_sampling else self.max_episode_length
+        self.action_noise = self.model.action_noise
         self._episode_storage = HerReplayBuffer(
             self.env,
             her_buffer_size,
@@ -276,6 +277,10 @@ class HER(BaseAlgorithm):
 
                 # Perform action
                 new_obs, reward, done, infos = env.step(action)
+                # import time
+                # from os import system
+                # time.sleep(0.5)
+                # system("clear")
 
                 self.num_timesteps += 1
                 self.model.num_timesteps = self.num_timesteps
