@@ -14,7 +14,7 @@ from stable_baselines3.common.noise import NormalActionNoise, OrnsteinUhlenbeckA
 
 import numpy as np
 
-model_class = TD3  # works also with SAC, DDPG and TD3
+model_class = DQN  # works also with SAC, DDPG and TD3
 
 mdp = OvercookedGridworld.from_layout_name("cramped_room_single")
 base_env = OvercookedEnv.from_mdp(mdp, horizon=1e4)
@@ -50,18 +50,17 @@ model = HER(
    tensorboard_log="./her_overcooked",
    batch_size=256,
    online_sampling=online_sampling,
-   action_noise = action_noise,
+   # action_noise = action_noise,
    # policy_kwargs=dict(net_arch=[256, 256, 256]),
 )
 
-# model = HER.load('./her_bit_env250.zip', env=env)
 # Train the model
 for i in range(1000):
-    model.learn(10000)
-    model.save(f"./her_bit_env{i}")
+    model.learn(100000)
+    model.save(f"./her_overcooked/saves/her_model{i}")
 
-# model = HER.load('./her_bit_env', env=env)
 
+episode_reward=0
 obs = env.reset()
 for _ in range(100):
    action, _ = model.predict(obs, deterministic=True)
