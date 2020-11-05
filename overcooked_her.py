@@ -12,6 +12,23 @@ import stable_baselines3.common.env_checker
 
 from stable_baselines3.common.noise import NormalActionNoise, OrnsteinUhlenbeckActionNoise
 
+import sys
+
+def info(type, value, tb):
+    if hasattr(sys, 'ps1') or not sys.stderr.isatty():
+        # we are in interactive mode or we don't have a tty-like
+        # device, so we call the default hook
+        sys.__excepthook__(type, value, tb)
+    else:
+        import traceback, pdb
+        # we are NOT in interactive mode, print the exception...
+        traceback.print_exception(type, value, tb)
+        print
+        # ...then start the debugger in post-mortem mode.
+        pdb.post_mortem(tb)
+
+sys.excepthook = info
+
 import numpy as np
 
 model_class = DQN  # works also with SAC, DDPG and TD3
@@ -30,9 +47,9 @@ goal_selection_strategy = 'future' # equivalent to GoalSelectionStrategy.FUTURE
 # If True the HER transitions will get sampled online
 online_sampling = True
 # Time limit for the episodes
-max_episode_length = 50
+# max_episode_length = 50
 
-action_noise = NormalActionNoise(mean=np.zeros(1), sigma=0.3 * np.ones(1))
+# action_noise = NormalActionNoise(mean=np.zeros(1), sigma=0.3 * np.ones(1))
 
 # Initialize the model
 model = HER(
@@ -56,10 +73,11 @@ model = HER(
 )
 
 # Train the model
-for i in range(1000):
-    model.learn(100000)
-    model.save(f"./her_overcooked/saves/her_model{i}")
+# for i in range(1000):
+model.learn(100000)
+model.save(f"./her_overcooked/saves/her_model_100000")
 
+model.load(f"./her_overcooked/saves/her_model_100000", env)
 
 episode_reward=0
 obs = env.reset()
