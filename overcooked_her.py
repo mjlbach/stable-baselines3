@@ -77,17 +77,33 @@ model = HER(
 model.learn(100000)
 model.save(f"./her_overcooked/saves/her_model_100000")
 
-model.load(f"./her_overcooked/saves/her_model_100000", env)
+model = HER.load(f"./her_overcooked/saves/her_model_100000", env)
 
 episode_reward=0
 obs = env.reset()
+import time
+from os import system
 for _ in range(100):
-   action, _ = model.predict(obs, deterministic=True)
+   # action, _ = model.predict(obs, deterministic=True)
+   action, _ = model.predict(obs)
    obs, reward, done, info = env.step(action)
-   env.render()
+   print(env.env.env.base_env)
+   print(reward)
    episode_reward += reward
    if done or info.get("is_success", False):
        print("Reward:", episode_reward, "Success?", info.get("is_success", False))
        episode_reward = 0.0
        obs = env.reset()
+   time.sleep(0.25)
+   system("clear")
+
+# for _ in range(100):
+#    action, _ = model.predict(obs, deterministic=True)
+#    obs, reward, done, info = env.step(action)
+#    env.render()
+#    episode_reward += reward
+#    if done or info.get("is_success", False):
+#        print("Reward:", episode_reward, "Success?", info.get("is_success", False))
+#        episode_reward = 0.0
+#        obs = env.reset()
 
