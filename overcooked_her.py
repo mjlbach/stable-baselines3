@@ -20,6 +20,7 @@ mdp = OvercookedGridworld.from_layout_name("cramped_room_single")
 base_env = OvercookedEnv.from_mdp(mdp, horizon=1e4)
 env = gym.make('Overcooked-single-v0')
 env.custom_init(base_env, base_env.lossless_state_encoding_mdp_single)
+env = gym.wrappers.TimeLimit(env, max_episode_steps=10)
 env = Monitor(env, "./her_overcooked/", allow_early_resets=True)
 
 # Available strategies (cf paper): future, final, episode
@@ -42,7 +43,7 @@ model = HER(
    goal_selection_strategy=goal_selection_strategy,
    # IMPORTANT: because the env is not wrapped with a TimeLimit wrapper
    # we have to manually specify the max number of steps per episode
-   max_episode_length=max_episode_length,
+   # max_episode_length=max_episode_length,
    verbose=1,
    buffer_size=int(1e6),
    learning_rate=1e-3,
