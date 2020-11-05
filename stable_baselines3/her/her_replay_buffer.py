@@ -320,7 +320,11 @@ class HerReplayBuffer(ReplayBuffer):
             # Clear info buffer
             self.info_buffer[self.pos] = deque(maxlen=self.max_episode_length)
 
-        self.buffer["observation"][self.pos][self.current_idx] = obs["observation"]
+        try:
+            self.buffer["observation"][self.pos][self.current_idx] = obs["observation"]
+        except:
+            import pdb
+            pdb.set_trace()
         self.buffer["achieved_goal"][self.pos][self.current_idx] = obs["achieved_goal"]
         self.buffer["desired_goal"][self.pos][self.current_idx] = obs["desired_goal"]
         self.buffer["action"][self.pos][self.current_idx] = action
