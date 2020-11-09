@@ -12,23 +12,6 @@ import stable_baselines3.common.env_checker
 
 from stable_baselines3.common.noise import NormalActionNoise, OrnsteinUhlenbeckActionNoise
 
-import sys
-
-def info(type, value, tb):
-    if hasattr(sys, 'ps1') or not sys.stderr.isatty():
-        # we are in interactive mode or we don't have a tty-like
-        # device, so we call the default hook
-        sys.__excepthook__(type, value, tb)
-    else:
-        import traceback, pdb
-        # we are NOT in interactive mode, print the exception...
-        traceback.print_exception(type, value, tb)
-        print
-        # ...then start the debugger in post-mortem mode.
-        pdb.post_mortem(tb)
-
-sys.excepthook = info
-
 import numpy as np
 
 model_class = DQN  # works also with SAC, DDPG and TD3
@@ -41,15 +24,10 @@ env = gym.wrappers.TimeLimit(env, max_episode_steps=10)
 env = Monitor(env, "./her_overcooked/", allow_early_resets=True)
 
 # Available strategies (cf paper): future, final, episode
-# goal_selection_strategy = 'future' # equivalent to GoalSelectionStrategy.FUTURE
 goal_selection_strategy = 'future' # equivalent to GoalSelectionStrategy.FUTURE
 
 # If True the HER transitions will get sampled online
 online_sampling = True
-# Time limit for the episodes
-# max_episode_length = 50
-
-# action_noise = NormalActionNoise(mean=np.zeros(1), sigma=0.3 * np.ones(1))
 
 # Initialize the model
 model = HER(
@@ -73,7 +51,6 @@ model = HER(
 )
 
 # Train the model
-# for i in range(1000):
 model.learn(100000)
 model.save(f"./her_overcooked/saves/her_model_100000")
 
@@ -84,26 +61,16 @@ obs = env.reset()
 import time
 from os import system
 for _ in range(100):
-   # action, _ = model.predict(obs, deterministic=True)
-   action, _ = model.predict(obs)
+   action, _ = model.predict(obs, deterministic=True)
    obs, reward, done, info = env.step(action)
    print(env.env.env.base_env)
    print(reward)
    episode_reward += reward
    if done or info.get("is_success", False):
-       print("Reward:", episode_reward, "Success?", info.get("is_success", False))
+       print("Number of steps:", episode_reward, "Success?", reward == 0.0)
        episode_reward = 0.0
        obs = env.reset()
-   time.sleep(0.25)
+   else:
+       print("Not yet finished")
+   time.sleep(0.5)
    system("clear")
-
-# for _ in range(100):
-#    action, _ = model.predict(obs, deterministic=True)
-#    obs, reward, done, info = env.step(action)
-#    env.render()
-#    episode_reward += reward
-#    if done or info.get("is_success", False):
-#        print("Reward:", episode_reward, "Success?", info.get("is_success", False))
-#        episode_reward = 0.0
-#        obs = env.reset()
-

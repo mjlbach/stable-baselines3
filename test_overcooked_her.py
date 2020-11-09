@@ -14,14 +14,14 @@ from stable_baselines3.common.noise import NormalActionNoise, OrnsteinUhlenbeckA
 
 import numpy as np
 
+model_class = DQN  # works also with SAC, DDPG and TD3
+
 mdp = OvercookedGridworld.from_layout_name("cramped_room_single")
 base_env = OvercookedEnv.from_mdp(mdp, horizon=1e4)
 env = gym.make('Overcooked-single-v0')
 env.custom_init(base_env, base_env.lossless_state_encoding_mdp_single)
 env = gym.wrappers.TimeLimit(env, max_episode_steps=10)
 env = Monitor(env, "./her_overcooked/", allow_early_resets=True)
-
-model_class=DQN
 
 # Available strategies (cf paper): future, final, episode
 goal_selection_strategy = 'future' # equivalent to GoalSelectionStrategy.FUTURE
@@ -58,10 +58,9 @@ import time
 from os import system
 for _ in range(100):
    action, _ = model.predict(obs, deterministic=True)
-   # action, _ = model.predict(obs)
    obs, reward, done, info = env.step(action)
    print(env.env.env.base_env)
-   # print(reward)
+   print(reward)
    episode_reward += reward
    if done or info.get("is_success", False):
        print("Number of steps:", episode_reward, "Success?", reward == 0.0)
