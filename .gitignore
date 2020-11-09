@@ -47,3 +47,7 @@ src
 *.prof
 
 MUJOCO_LOG.TXT
+tags
+recording
+overcooked_ai
+her_overcooked
