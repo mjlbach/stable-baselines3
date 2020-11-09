@@ -57,16 +57,17 @@ obs = env.reset()
 import time
 from os import system
 for _ in range(100):
-   # action, _ = model.predict(obs, deterministic=True)
-   action, _ = model.predict(obs)
+   action, _ = model.predict(obs, deterministic=True)
+   # action, _ = model.predict(obs)
    obs, reward, done, info = env.step(action)
    print(env.env.env.base_env)
-   print(reward)
+   # print(reward)
    episode_reward += reward
    if done or info.get("is_success", False):
-       print("Reward:", episode_reward, "Success?", info.get("is_success", False))
+       print("Number of steps:", episode_reward, "Success?", reward == 0.0)
        episode_reward = 0.0
        obs = env.reset()
-   time.sleep(0.25)
+   else:
+       print("Not yet finished")
+   time.sleep(0.5)
    system("clear")
-
