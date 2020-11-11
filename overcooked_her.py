@@ -17,7 +17,8 @@ import numpy as np
 model_class = DQN  # works also with SAC, DDPG and TD3
 
 mdp = OvercookedGridworld.from_layout_name("cramped_room_single")
-base_env = OvercookedEnv.from_mdp(mdp, horizon=1e4)
+start_state_fn = mdp.get_random_start_state_fn(random_start_pos=True, rnd_obj_prob_thresh=0.5)
+base_env = OvercookedEnv.from_mdp(mdp, start_state_fn=start_state_fn, horizon=1e4)
 env = gym.make('Overcooked-single-v0')
 env.custom_init(base_env, base_env.lossless_state_encoding_mdp_single)
 env = gym.wrappers.TimeLimit(env, max_episode_steps=10)
