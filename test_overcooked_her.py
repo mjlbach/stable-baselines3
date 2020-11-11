@@ -17,7 +17,8 @@ import numpy as np
 model_class = DQN  # works also with SAC, DDPG and TD3
 
 mdp = OvercookedGridworld.from_layout_name("cramped_room_single")
-base_env = OvercookedEnv.from_mdp(mdp, horizon=1e4)
+start_state_fn = mdp.get_random_start_state_fn(random_start_pos=True, rnd_obj_prob_thresh=0.5)
+base_env = OvercookedEnv.from_mdp(mdp, start_state_fn=start_state_fn, horizon=1e4)
 env = gym.make('Overcooked-single-v0')
 env.custom_init(base_env, base_env.lossless_state_encoding_mdp_single)
 env = gym.wrappers.TimeLimit(env, max_episode_steps=10)
@@ -50,7 +51,7 @@ model = HER(
    # policy_kwargs=dict(net_arch=[256, 256, 256]),
 )
 
-model = HER.load(f"./her_overcooked/saves/her_model_100000", env)
+# model = HER.load(f"./her_overcooked/saves/her_model_100000", env)
 
 episode_reward=0
 obs = env.reset()
@@ -58,6 +59,8 @@ import time
 from os import system
 for _ in range(100):
    action, _ = model.predict(obs, deterministic=True)
+   import pdb
+   pdb.set_trace()
    obs, reward, done, info = env.step(action)
    print(env.env.env.base_env)
    print(reward)
