@@ -52,10 +52,10 @@ model = HER(
 )
 
 # Train the model
-model.learn(100000)
-model.save(f"./her_overcooked/saves/her_model_100000")
+model.learn(300000)
+model.save(f"./her_overcooked/saves/her_model_300000")
 
-model = HER.load(f"./her_overcooked/saves/her_model_100000", env)
+model = HER.load(f"./her_overcooked/saves/her_model_300000", env)
 
 episode_reward=0
 obs = env.reset()

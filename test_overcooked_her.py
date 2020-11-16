@@ -59,8 +59,6 @@ import time
 from os import system
 for _ in range(100):
    action, _ = model.predict(obs, deterministic=True)
-   import pdb
-   pdb.set_trace()
    obs, reward, done, info = env.step(action)
    print(env.env.env.base_env)
    print(reward)
