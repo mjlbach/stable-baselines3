@@ -30,28 +30,7 @@ goal_selection_strategy = 'future' # equivalent to GoalSelectionStrategy.FUTURE
 # If True the HER transitions will get sampled online
 online_sampling = True
 
-# Initialize the model
-model = HER(
-   "MlpPolicy",
-   env,
-   model_class,
-   n_sampled_goal=4,
-   goal_selection_strategy=goal_selection_strategy,
-   # IMPORTANT: because the env is not wrapped with a TimeLimit wrapper
-   # we have to manually specify the max number of steps per episode
-   # max_episode_length=max_episode_length,
-   verbose=1,
-   buffer_size=int(1e6),
-   learning_rate=1e-3,
-   gamma=0.95,
-   tensorboard_log="./her_overcooked",
-   batch_size=256,
-   online_sampling=online_sampling,
-   # action_noise = action_noise,
-   # policy_kwargs=dict(net_arch=[256, 256, 256]),
-)
-
-# model = HER.load(f"./her_overcooked/saves/her_model_100000", env)
+model = HER.load(f"./her_overcooked/saves/her_model_300000", env)
 
 episode_reward=0
 obs = env.reset()
